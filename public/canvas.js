@@ -5,9 +5,39 @@ const ctx = canvas.getContext("2d");
 
 const gridSize = 16;
 const cellSize = canvas.width / gridSize;
+let color = "blue";
 const toolbar = document.getElementById("toolbar");
-let currentTool = "p";
+let tool = "p";
 let isDrawing = false;
+
+// PICKR/COLOR
+
+const pickr = Pickr.create({
+    el: "#pickr",
+    theme: "nano",
+    default: color,
+    swatches: [
+        '#000000', '#ffffff', '#ff0000', '#00ff00', '#0000ff',
+        '#ffff00', '#ff00ff', '#00ffff', '#808080', '#c0c0c0'
+    ],
+    components: {
+        preview: true,
+        opacity: true,
+        hue: true,
+
+        interaction: {
+            hex: true,
+            rgba: true,
+            input: true,
+            save: true
+        }
+    }
+});
+
+pickr.on("save", (newColor) => {
+    color = newColor.toHEXA().toString();
+    pickr.hide();
+})
 
 // SWITCH TOOLS
 
@@ -15,12 +45,12 @@ toolbar.onclick = (e) => {
     const btn = e.target.closest("button[data-tool]");
     if (!btn) return;
 
-    currentTool = btn.dataset.tool;
-    setActiveTool(currentTool);
+    tool = btn.dataset.tool;
+    setActiveTool(tool);
 }
 
 function setActiveTool  () {
-    const btn = toolbar.querySelector(`button[data-tool="${currentTool}"]`);
+    const btn = toolbar.querySelector(`button[data-tool="${tool}"]`);
     if (btn) {
         [...toolbar.children].forEach(child => {
             child.classList.toggle("active", child === btn);
@@ -54,14 +84,14 @@ function drawPixel(e) {
     const col = Math.floor(x / cellSize);
     const row = Math.floor(y / cellSize);
 
-    if (currentTool === "p") {
-        ctx.fillStyle = "blue";
+    if (tool === "p") {
+        ctx.fillStyle = color;
         ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
-    } else if (currentTool === "e") {
+    } else if (tool === "e") {
         ctx.clearRect(col * cellSize, row * cellSize, cellSize, cellSize);
     }
 }
 
 // ON PAGE LOAD
 
-setActiveTool(currentTool);
+setActiveTool(tool);
