@@ -2,12 +2,14 @@
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-
 const gridSize = 16;
 const cellSize = canvas.width / gridSize;
-let color = localStorage.getItem("color") || "green";
+
+let color = localStorage.getItem("color") || "#ff69b4";
+
 const toolbar = document.getElementById("toolbar");
-let tool = localStorage.getItem("tool") || "p";
+let tool = localStorage.getItem("tool") || "b";
+
 let isDrawing = false;
 
 // PICKR/COLOR
@@ -16,10 +18,6 @@ const pickr = Pickr.create({
     el: "#pickr",
     theme: "nano",
     default: color,
-    swatches: [
-        '#000000', '#ffffff', '#ff0000', '#00ff00', '#0000ff',
-        '#ffff00', '#ff00ff', '#00ffff', '#808080', '#c0c0c0'
-    ],
     components: {
         preview: true,
         opacity: true,
@@ -37,8 +35,10 @@ const pickr = Pickr.create({
 pickr.on("save", (newColor) => {
     color = newColor.toHEXA().toString();
     localStorage.setItem("color", color);
-    tool = "p";
+
+    tool = "b";
     setActiveTool();
+    
     pickr.hide();
 })
 
@@ -88,7 +88,7 @@ function drawPixel(e) {
     const col = Math.floor(x / cellSize);
     const row = Math.floor(y / cellSize);
 
-    if (tool === "p") {
+    if (tool === "b") {
         ctx.fillStyle = color;
         ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
     } else if (tool === "e") {
