@@ -5,9 +5,9 @@ const ctx = canvas.getContext("2d");
 
 const gridSize = 16;
 const cellSize = canvas.width / gridSize;
-let color = "blue";
+let color = localStorage.getItem("color") || "green";
 const toolbar = document.getElementById("toolbar");
-let tool = "p";
+let tool = localStorage.getItem("tool") || "p";
 let isDrawing = false;
 
 // PICKR/COLOR
@@ -36,6 +36,9 @@ const pickr = Pickr.create({
 
 pickr.on("save", (newColor) => {
     color = newColor.toHEXA().toString();
+    localStorage.setItem("color", color);
+    tool = "p";
+    setActiveTool();
     pickr.hide();
 })
 
@@ -49,13 +52,14 @@ toolbar.onclick = (e) => {
     setActiveTool(tool);
 }
 
-function setActiveTool  () {
+function setActiveTool() {
     const btn = toolbar.querySelector(`button[data-tool="${tool}"]`);
     if (btn) {
         [...toolbar.children].forEach(child => {
             child.classList.toggle("active", child === btn);
         });
     }
+    localStorage.setItem("tool", tool);
 }
 
 // DRAWING EVENT LISTENERS

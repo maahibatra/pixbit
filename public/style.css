@@ -1,6 +1,6 @@
 body {
-    background-color: black;
-    color: white;
+    background-color: #1e1e2f;
+    color: #f4f4f4;
     font-family: "Pixelify Sans", sans-serif;
 }
 
@@ -16,28 +16,34 @@ body {
     font-size: 4vw;
     text-align: center;
     text-decoration: underline;
+    color: #ffc857;
 }
 
 button {
     background-color: transparent;
-    border: 0.15vw solid gray;
+    border: 0.15vw solid #7f8fa6;
     border-radius: 0.2vw;
     padding: 0.3vw 1vw;
     font-size: 1vw;
-    color: white;
+    color: #f4f4f4;
     font-family: "Pixelify Sans", sans-serif;
     transition: 0.3s;
     cursor: pointer;
 }
 
 button:hover {
-    background-color: darkslategray;
-    border-color: white;
+    background-color: rgba(67, 93, 119, 0.2);
+    border-color: #9fb0c8;
 }
 
 button.active {
-    background-color: rgba(0, 0, 255, 0.2);
-    border-color: blue;
+    background-color: rgba(255, 105, 180, 0.2);
+    border-color: #ff69b4;
+}
+
+button.active:hover {
+    background-color: rgba(255, 105, 180, 0.35);
+    border-color: #ff85c1;
 }
 
 #toolbar {
@@ -56,7 +62,7 @@ button.active {
     width: 100%;
     height: 100%;
     display: block;
-    background-color: white;
+    background-color: #ecf0f1;
 }
 
 #grid {
@@ -74,7 +80,7 @@ button.active {
     display: block;
     width: 100%;
     height: 100%;
-    background-image: linear-gradient(to right, black 2px, transparent 2px),
-        linear-gradient(to bottom, black 2px, transparent 2px);
+    background-image: linear-gradient(to right, #2c3e50 2px, transparent 2px),
+        linear-gradient(to bottom, #2c3e50 2px, transparent 2px);
     background-size: calc(800px / 16) calc(800px / 16);
 }
