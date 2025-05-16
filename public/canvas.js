@@ -10,6 +10,9 @@ let color = localStorage.getItem("color") || "#ff69b4";
 const toolbar = document.getElementById("toolbar");
 let tool = localStorage.getItem("tool") || "b";
 
+const saveT = document.getElementById("saveT");
+const saveO = document.getElementById("saveO");
+
 let isDrawing = false;
 
 // PICKR/COLOR
@@ -61,6 +64,39 @@ function setActiveTool() {
     }
     localStorage.setItem("tool", tool);
 }
+
+// SAVING ARTWORK
+
+saveT.addEventListener("click", () => {
+    const expCanvas = document.createElement("canvas");
+    expCanvas.width = gridSize;
+    expCanvas.height = gridSize;
+    const expCtx = expCanvas.getContext("2d");
+
+    expCtx.drawImage(canvas, 0, 0, gridSize, gridSize);
+
+    const link = document.createElement("a");
+    link.download = "image.png";
+    link.href = expCanvas.toDataURL("image/png");
+    link.click();
+});
+
+saveO.addEventListener("click", () => {
+    const expCanvas = document.createElement("canvas");
+    expCanvas.width = gridSize;
+    expCanvas.height = gridSize;
+    const expCtx = expCanvas.getContext("2d");
+
+    expCtx.fillStyle = "#ffffff";
+    expCtx.fillRect(0, 0, gridSize, gridSize);
+
+    expCtx.drawImage(canvas, 0, 0, gridSize, gridSize);
+
+    const link = document.createElement("a");
+    link.download = "image.png";
+    link.href = expCanvas.toDataURL("image/png");
+    link.click();
+});
 
 // DRAWING EVENT LISTENERS
 
