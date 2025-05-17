@@ -20,6 +20,7 @@ const save = document.getElementById("save");
 let lastCol = null;
 let lastRow = null;
 let isDrawing = false;
+let skip = false;
 
 // PICKR/COLOR
 
@@ -201,10 +202,9 @@ window.addEventListener("mouseup", () => {
     lastRow = null;
 });
 
-canvas.addEventListener("mouseleave", () => {
-    lastCol = null;
-    lastRow = null;
-}); // might be causing one/two pixels to not be drawn on leaving/reentering when going too fast
+canvas.addEventListener("mouseleave", (e) => {
+    skip = true;
+});
 
 // CANVAS FUNCTIONS
 
@@ -216,25 +216,38 @@ function draw(e) {
     const col = Math.floor(x / cellSize);
     const row = Math.floor(y / cellSize);
 
-    if (lastCol === null || lastRow === null) {
+    if (col === lastCol && row === lastRow) return;
+
+    if (skip) {
         drawPixel(col, row);
-        lastCol = col;
-        lastRow = row;
-        return;
-    }
-
-    const dx = col - lastCol;
-    const dy = row - lastRow;
-    const steps = Math.max(Math.abs(dx), Math.abs(dy));
-
-    for (let i = 0; i <= steps; i++) {
-        const ix = Math.round(lastCol + (dx * i) / steps);
-        const iy = Math.round(lastRow + (dy * i) / steps);
-        drawPixel(ix, iy);
-    }
+        skip = false;
+    } else if (lastCol !== null && lastRow !== null)
+        path(lastCol, lastRow, col, row);
 
     lastCol = col;
     lastRow = row;
+}
+
+function path(x0, y0, x1, y1) {
+    const dx = Math.abs(x1 - x0);
+    const dy = Math.abs(y1 - y0);
+    const sx = x0 < x1 ? 1 : -1;
+    const sy = y0 < y1 ? 1 : -1;
+    let err = dx - dy;
+
+    while (true) {
+        drawPixel(x0, y0);
+        
+        if (x0 === x1 && y0 === y1) break;
+        const e2 = 2 * err;
+        if (e2 > -dy) {
+            err -= dy;
+            x0 += sx;
+        } if (e2 < dx) {
+            err += dx;
+            y0 += sy;
+        }
+    }
 }
 
 function drawPixel(col, row) {
