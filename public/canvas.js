@@ -12,6 +12,8 @@ let tool = localStorage.getItem("tool") || "b";
 
 const save = document.getElementById("save");
 
+let lastCol = null;
+let lastRow = null;
 let isDrawing = false;
 
 // PICKR/COLOR
@@ -101,21 +103,28 @@ saveMenu.addEventListener("click", (e) => {
 
 canvas.addEventListener("mousedown", (e) => {
     isDrawing = true;
-    drawPixel(e);
+    draw(e);
 });
 
 canvas.addEventListener("mousemove", (e) => {
     if(isDrawing)
-        drawPixel(e);
+        draw(e);
 });
 
 window.addEventListener("mouseup", () => {
     isDrawing = false;
+    lastCol = null;
+    lastRow = null;
+});
+
+canvas.addEventListener("mouseleave", () => {
+    lastCol = null;
+    lastRow = null;
 });
 
 // CANVAS FUNCTIONS
 
-function drawPixel(e) {
+function draw(e) {
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -123,6 +132,28 @@ function drawPixel(e) {
     const col = Math.floor(x / cellSize);
     const row = Math.floor(y / cellSize);
 
+    if (lastCol === null || lastRow === null) {
+        drawPixel(col, row);
+        lastCol = col;
+        lastRow = row;
+        return;
+    }
+
+    const dx = col - lastCol;
+    const dy = row - lastRow;
+    const steps = Math.max(Math.abs(dx), Math.abs(dy));
+
+    for (let i = 0; i <= steps; i++) {
+        const ix = Math.round(lastCol + (dx * i) / steps);
+        const iy = Math.round(lastRow + (dy * i) / steps);
+        drawPixel(ix, iy);
+    }
+
+    lastCol = col;
+    lastRow = row;
+}
+
+function drawPixel(col, row) {
     if (tool === "b") {
         ctx.fillStyle = color;
         ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
