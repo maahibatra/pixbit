@@ -77,7 +77,7 @@ undo.addEventListener("click", () => {
     if (undoStack.length > 0) {
         const state = undoStack.pop();
         redoStack.push(canvas.toDataURL());
-        loadState(state);
+        loadState(state, undo);
     }
 });
 
@@ -85,17 +85,22 @@ redo.addEventListener("click", () => {
     if (redoStack.length > 0) {
         const state = redoStack.pop();
         undoStack.push(canvas.toDataURL());
-        loadState(state);
+        loadState(state, redo);
     }
 });
 
 function saveState() {
+    redoStack = [];
     undoStack.push(canvas.toDataURL());
     if (undoStack.length > 25)
         undoStack.shift();
 }
 
-function loadState(state) {
+function loadState(state, button) {
+    button.classList.add("active");
+    setTimeout(() => {
+        button.classList.remove("active");
+    }, 300);
     const img = new Image();
     img.src = state;
     img.onload = () => {
@@ -106,8 +111,17 @@ function loadState(state) {
 
 // SAVING ARTWORK
 
-save.addEventListener("click", () => {
+save.addEventListener("click", (e) => {
+    e.stopPropagation();
     saveMenu.classList.toggle("show");
+    saveBtn.classList.toggle("active");
+});
+
+window.addEventListener("click", (e) => {
+    if (!saveMenu.contains(e.target)) {
+        saveMenu.classList.remove("show");
+        saveBtn.classList.remove("active");
+    }
 });
 
 saveMenu.addEventListener("click", (e) => {
@@ -137,6 +151,37 @@ saveMenu.addEventListener("click", (e) => {
     link.click();
 });
 
+// KEYBINDS
+
+window.addEventListener("keydown", (e) => {
+    if (e.ctrlKey) {
+        switch (e.key.toLowerCase()) {
+            case "b":
+                e.preventDefault();
+                tool = "b";
+                setActiveTool();
+                break;
+            case "e":
+                e.preventDefault();
+                tool = "e";
+                setActiveTool();
+                break;
+            case "z":
+                e.preventDefault();
+                undo.click();
+                break;
+            case "y":
+                e.preventDefault();
+                redo.click();
+                break;
+            case "s":
+                e.preventDefault();
+                save.click();
+                break;
+        }
+    }
+})
+
 // DRAWING EVENT LISTENERS
 
 canvas.addEventListener("mousedown", (e) => {
@@ -159,7 +204,7 @@ window.addEventListener("mouseup", () => {
 canvas.addEventListener("mouseleave", () => {
     lastCol = null;
     lastRow = null;
-});
+}); // might be causing one/two pixels to not be drawn on leaving/reentering when going too fast
 
 // CANVAS FUNCTIONS
 
