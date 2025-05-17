@@ -10,6 +10,11 @@ let color = localStorage.getItem("color") || "#ff69b4";
 const toolbar = document.getElementById("toolbar");
 let tool = localStorage.getItem("tool") || "b";
 
+let undo = document.getElementById("undo");
+let redo = document.getElementById("redo");
+let undoStack = [];
+let redoStack = [];
+
 const save = document.getElementById("save");
 
 let lastCol = null;
@@ -66,6 +71,39 @@ function setActiveTool() {
     localStorage.setItem("tool", tool);
 }
 
+// UNDO AND REDO
+
+undo.addEventListener("click", () => {
+    if (undoStack.length > 0) {
+        const state = undoStack.pop();
+        redoStack.push(canvas.toDataURL());
+        loadState(state);
+    }
+});
+
+redo.addEventListener("click", () => {
+    if (redoStack.length > 0) {
+        const state = redoStack.pop();
+        undoStack.push(canvas.toDataURL());
+        loadState(state);
+    }
+});
+
+function saveState() {
+    undoStack.push(canvas.toDataURL());
+    if (undoStack.length > 25)
+        undoStack.shift();
+}
+
+function loadState(state) {
+    const img = new Image();
+    img.src = state;
+    img.onload = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+    }
+}
+
 // SAVING ARTWORK
 
 save.addEventListener("click", () => {
@@ -102,6 +140,7 @@ saveMenu.addEventListener("click", (e) => {
 // DRAWING EVENT LISTENERS
 
 canvas.addEventListener("mousedown", (e) => {
+    saveState();
     isDrawing = true;
     draw(e);
 });
