@@ -166,6 +166,11 @@ window.addEventListener("keydown", (e) => {
                 tool = "e";
                 setActiveTool();
                 break;
+            case "i":
+                e.preventDefault();
+                tool = "i";
+                setActiveTool();
+                break;
             case "z":
                 e.preventDefault();
                 undo.click();
@@ -185,7 +190,9 @@ window.addEventListener("keydown", (e) => {
 // DRAWING EVENT LISTENERS
 
 canvas.addEventListener("mousedown", (e) => {
-    saveState();
+    if (tool === "b" || tool === "e") {
+        saveState();
+    }
     isDrawing = true;
     draw(e);
 });
@@ -252,8 +259,12 @@ function path(x0, y0, x1, y1) {
 
 function drawPixel(col, row) {
     if (tool === "b") {
-        ctx.fillStyle = color;
-        ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+        if (color === null)
+            ctx.clearRect(col * cellSize, row * cellSize, cellSize, cellSize);
+        else {
+            ctx.fillStyle = color;
+            ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+        }
     } else if (tool === "e") {
         ctx.clearRect(col * cellSize, row * cellSize, cellSize, cellSize);
     } else if (tool === "i") {
@@ -261,7 +272,8 @@ function drawPixel(col, row) {
             imageData = ctx.getImageData(col * cellSize, row * cellSize, cellSize, cellSize);
             const [r, g, b, a] = imageData.data;
             color = rgbaToHex(r, g, b, a);
-            pickr.setColor(color);
+            if (color !== null)
+                pickr.setColor(color);
             localStorage.setItem("color", color);
             tool = "b";
             setActiveTool();
@@ -270,7 +282,7 @@ function drawPixel(col, row) {
 }
 
 function rgbaToHex(r, g, b, a) {
-    if (a === 0) return "transparent";
+    if (a === 0) return null;
     return "#" + [r, g, b].map(x => x.toString(16).padStart(2, "0")).join(""); 
 }
 
