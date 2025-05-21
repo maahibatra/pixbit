@@ -227,7 +227,6 @@ function draw(e) {
     if (skip) {
         drawPixel(col, row);
         skip = false;
-        console.log("test");
     } else if (lastCol !== null && lastRow !== null)
         path(lastCol, lastRow, col, row);
 
@@ -259,7 +258,7 @@ function path(x0, y0, x1, y1) {
 
 function drawPixel(col, row) {
     if (tool === "b") {
-        if (color === null)
+        if (color === "#00000000")
             ctx.clearRect(col * cellSize, row * cellSize, cellSize, cellSize);
         else {
             ctx.fillStyle = color;
@@ -268,22 +267,27 @@ function drawPixel(col, row) {
     } else if (tool === "e") {
         ctx.clearRect(col * cellSize, row * cellSize, cellSize, cellSize);
     } else if (tool === "i") {
-        canvas.addEventListener("mouseup", () => {
+        function eyedropperFunction() {
             imageData = ctx.getImageData(col * cellSize, row * cellSize, cellSize, cellSize);
             const [r, g, b, a] = imageData.data;
             color = rgbaToHex(r, g, b, a);
-            if (color !== null)
-                pickr.setColor(color);
+            console.log(color)
+            pickr.setColor(color);
             localStorage.setItem("color", color);
             tool = "b";
             setActiveTool();
-        });
+            console.log("meow!")
+        }
+
+        canvas.addEventListener("mouseup", eyedropperFunction);
+        setTimeout(() => {
+            canvas.removeEventListener("mouseup", eyedropperFunction);
+        }, 100);
     }
 }
 
 function rgbaToHex(r, g, b, a) {
-    if (a === 0) return null;
-    return "#" + [r, g, b].map(x => x.toString(16).padStart(2, "0")).join(""); 
+    return "#" + [r, g, b, a].map(x => x.toString(16).padStart(2, "0")).join("");
 }
 
 // ON PAGE LOAD
