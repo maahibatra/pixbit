@@ -84,7 +84,7 @@ button.active:hover {
     background-size: 800px 800px;
     background-image:
         linear-gradient(45deg, #bcbcbc 25%, transparent 25%, transparent 75%, #bcbcbc 75%, #bcbcbc 100%),
-        linear-gradient(45deg, #bcbcbc 25%, white 25%, white 75%, #bcbcbc 75%, #bcbcbc 100%);
+        linear-gradient(45deg, #bcbcbc 25%, transparent 25%, transparent 75%, #bcbcbc 75%, #bcbcbc 100%);
 }
 
 #canvas {
