@@ -9,9 +9,8 @@ let color = localStorage.getItem("color") || "#ff69b4";
 
 const toolbar = document.getElementById("toolbar");
 let tool = localStorage.getItem("tool") || "b";
-
-let undo = document.getElementById("undo");
-let redo = document.getElementById("redo");
+const undo = document.getElementById("undo");
+const redo = document.getElementById("redo");
 let undoStack = [];
 let redoStack = [];
 
@@ -221,6 +220,7 @@ function draw(e) {
     if (skip) {
         drawPixel(col, row);
         skip = false;
+        console.log("test");
     } else if (lastCol !== null && lastRow !== null)
         path(lastCol, lastRow, col, row);
 
@@ -256,7 +256,22 @@ function drawPixel(col, row) {
         ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
     } else if (tool === "e") {
         ctx.clearRect(col * cellSize, row * cellSize, cellSize, cellSize);
+    } else if (tool === "i") {
+        canvas.addEventListener("mouseup", () => {
+            imageData = ctx.getImageData(col * cellSize, row * cellSize, cellSize, cellSize);
+            const [r, g, b, a] = imageData.data;
+            color = rgbaToHex(r, g, b, a);
+            pickr.setColor(color);
+            localStorage.setItem("color", color);
+            tool = "b";
+            setActiveTool();
+        });
     }
+}
+
+function rgbaToHex(r, g, b, a) {
+    if (a === 0) return "transparent";
+    return "#" + [r, g, b].map(x => x.toString(16).padStart(2, "0")).join(""); 
 }
 
 // ON PAGE LOAD
