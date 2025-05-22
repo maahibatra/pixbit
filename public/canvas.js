@@ -17,6 +17,7 @@ let redoStack = [];
 const save = document.getElementById("save");
 
 const stg = document.getElementById("stg");
+let openedI = null;
 
 let lastCol = null;
 let lastRow = null;
@@ -153,25 +154,24 @@ saveMenu.addEventListener("click", (e) => {
     link.click();
 });
 
-// SAVE TO GALLERY
+// SAVE TO AND LOAD FROM GALLERY
 
 stg.addEventListener("click", () => {
-    const name = prompt("Name your artwork:");
-
-    if (!name) return;
-
+    const artworks = JSON.parse(localStorage.getItem("artworks")) || [];
     const data = canvas.toDataURL();
-    const newArt = { name, data };
 
-    const gallery = JSON.parse(localStorage.getItem("artworks")) || [];
+    if (openedI !== null) {
+        artworks[openedI].data = data;
+    } else {
+        const name = prompt("Name your artwork:");
+        if (!name) return;
 
-    gallery.push(newArt);
-    localStorage.setItem("artworks", JSON.stringify(gallery));
+        artworks.push(newArt);
+    }
 
+    localStorage.setItem("artworks", JSON.stringify(artworks));
     alert("Artwork saved");
 });
-
-// LOAD FROM GALLERY
 
 function loadArt() {
     const params = new URLSearchParams(window.location.search);
@@ -182,6 +182,7 @@ function loadArt() {
         const art = artworks[parseInt(i)];
 
         if (art) {
+            openedI = parseInt(i);
             const img = new Image();
             img.src = art.data;
             img.onload = () => {
