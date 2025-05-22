@@ -1,6 +1,17 @@
-const gallery = document.getElementById("gallery");
+// VARIABLES
 
+const newArt = document.getElementById("newArt");
+
+const gallery = document.getElementById("gallery");
 const artworks = JSON.parse(localStorage.getItem("artworks")) || [];
+
+// NEW ARTWORK
+
+newArt.addEventListener("click", () => {
+    window.location.href = "canvas.html";
+});
+
+// LOAD ARTWORK
 
 artworks.forEach((art, i) => {
     const link = document.createElement("a");
