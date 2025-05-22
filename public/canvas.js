@@ -271,12 +271,10 @@ function drawPixel(col, row) {
             imageData = ctx.getImageData(col * cellSize, row * cellSize, cellSize, cellSize);
             const [r, g, b, a] = imageData.data;
             color = rgbaToHex(r, g, b, a);
-            console.log(color)
             pickr.setColor(color);
             localStorage.setItem("color", color);
             tool = "b";
             setActiveTool();
-            console.log("meow!")
         }
 
         canvas.addEventListener("mouseup", eyedropperFunction);

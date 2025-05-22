@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pixbit!</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="canvas.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/nano.min.css"/>
+</head>
+<body>
+    <div id="app">
+        <div id="header">pixbit!</div>
+
+        <div id="toolbar">
+            <div id="pickr"></div>
+            <button data-tool="b">BRUSH</button>
+            <button data-tool="e">ERASER</button>
+            <button data-tool="i">EYEDROPPER</button>
+            <button id="undo">UNDO</button>
+            <button id="redo">REDO</button>
+            <div id="save">
+                <button id="saveBtn">SAVE</button>
+                <div id="saveMenu">
+                    <button data-save="transparent">Transparent PNG</button>
+                    <button data-save="opaque">White Background PNG</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="board">
+            <canvas id="canvas" width="800" height="800"></canvas>
+            <div id="grid"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr"></script>
+    <script src="canvas.js"></script>
+</body>
+</html>
