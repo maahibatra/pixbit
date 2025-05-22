@@ -2,8 +2,14 @@ const gallery = document.getElementById("gallery");
 
 const artworks = JSON.parse(localStorage.getItem("artworks")) || [];
 
-artworks.forEach(art => {
-    const img = new Image();
+artworks.forEach((art, i) => {
+    const link = document.createElement("a");
+    link.href = `canvas.html?artwork=${i}`;
+
+    const img = document.createElement("img");
     img.src = art.data;
-    gallery.appendChild(img);
+    img.alt = art.name;
+
+    link.appendChild(img);
+    gallery.appendChild(link);
 });

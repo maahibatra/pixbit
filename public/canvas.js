@@ -171,6 +171,27 @@ stg.addEventListener("click", () => {
     alert("Artwork saved");
 });
 
+// LOAD FROM GALLERY
+
+function loadArt() {
+    const params = new URLSearchParams(window.location.search);
+    const i = params.get("artwork");
+
+    if (i !== null) {
+        const artworks = JSON.parse(localStorage.getItem("artworks")) || [];
+        const art = artworks[parseInt(i)];
+
+        if (art) {
+            const img = new Image();
+            img.src = art.data;
+            img.onload = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            };
+        }
+    }
+}
+
 // KEYBINDS
 
 window.addEventListener("keydown", (e) => {
@@ -311,3 +332,4 @@ function rgbaToHex(r, g, b, a) {
 // ON PAGE LOAD
 
 setActiveTool(tool);
+loadArt();
