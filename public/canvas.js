@@ -16,6 +16,8 @@ let redoStack = [];
 
 const save = document.getElementById("save");
 
+const stg = document.getElementById("stg");
+
 let lastCol = null;
 let lastRow = null;
 let isDrawing = false;
@@ -149,6 +151,24 @@ saveMenu.addEventListener("click", (e) => {
     }
 
     link.click();
+});
+
+// SAVE TO GALLERY
+
+stg.addEventListener("click", () => {
+    const name = prompt("Name your artwork:");
+
+    if (!name) return;
+
+    const data = canvas.toDataURL();
+    const newArt = { name, data };
+
+    const gallery = JSON.parse(localStorage.getItem("artworks")) || [];
+
+    gallery.push(newArt);
+    localStorage.setItem("artworks", JSON.stringify(gallery));
+
+    alert("Artwork saved");
 });
 
 // KEYBINDS

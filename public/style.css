@@ -3,3 +3,18 @@ body {
     color: #f4f4f4;
     font-family: "Pixelify Sans", sans-serif;
 }
+
+#app {
+    margin-top: 2vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5vw;
+}
+
+#header {
+    font-size: 4vw;
+    text-align: center;
+    text-decoration: underline;
+    color: #ffc857;
+}
