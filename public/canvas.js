@@ -166,7 +166,7 @@ stg.addEventListener("click", () => {
         const name = prompt("Name your artwork:");
         if (!name) return;
 
-        artworks.push(newArt);
+        artworks.push({ name, data });
     }
 
     localStorage.setItem("artworks", JSON.stringify(artworks));

@@ -4,6 +4,9 @@ const newArt = document.getElementById("newArt");
 
 const gallery = document.getElementById("gallery");
 const artworks = JSON.parse(localStorage.getItem("artworks")) || [];
+const artMenu = document.getElementById("artMenu");
+const del = document.getElementById("del");
+const close = document.getElementById("close");
 
 // NEW ARTWORK
 
@@ -11,9 +14,12 @@ newArt.addEventListener("click", () => {
     window.location.href = "canvas.html";
 });
 
-// LOAD ARTWORK
+// LOAD AND DELETE ARTWORK
 
 artworks.forEach((art, i) => {
+    const wrapper = document.createElement("div");
+    wrapper.className = "artEl";
+
     const link = document.createElement("a");
     link.href = `canvas.html?artwork=${i}`;
 
@@ -22,5 +28,25 @@ artworks.forEach((art, i) => {
     img.alt = art.name;
 
     link.appendChild(img);
-    gallery.appendChild(link);
+    wrapper.appendChild(link);
+
+    const artOpts = document.createElement("button");
+    artOpts.className = "artOpts";
+    artOpts.textContent = "...";
+
+    artOpts.addEventListener("click", () => {
+        artMenu.style.display = "block";
+        del.addEventListener("click", () => {
+            artworks.splice(i, 1);
+            localStorage.setItem("artworks", JSON.stringify(artworks));
+            location.reload();
+        });
+    });
+
+    wrapper.appendChild(artOpts);
+    gallery.appendChild(wrapper);
+});
+
+close.addEventListener("click", () => {
+    artMenu.style.display = "none";
 });

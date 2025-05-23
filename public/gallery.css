@@ -1,0 +1,35 @@
+#gallery {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 3vw;
+    padding: 1vw;
+}
+
+#gallery img {
+    width: 300px;
+    height: auto;
+    border-radius: 0.4vw;
+    transition: 0.3s;
+    border: 0.3vw solid #7f8fa6;
+    border-radius: 0.2vw;
+}
+
+#gallery img:hover {
+    transform: scale(1.1);
+}
+
+.artOpts {
+    border: none;
+    margin-top: -1vw;
+    font-size: 2vw;
+    color: #7f8fa6;
+}
+
+.artOpts:hover {
+    background: none;
+    color: #f4f4f4;
+}
+
+#artMenu {
+    display: none;
+}
