@@ -4,12 +4,6 @@
     gap: 1vw 3vw;
 }
 
-.artEl {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-}
-
 #gallery img {
     width: 300px;
     height: auto;
@@ -21,6 +15,18 @@
 
 #gallery img:hover {
     transform: scale(1.1);
+    border-color: #f4f4f4;
+}
+
+.infoRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.artName {
+    font-size: 2vw;
+    color: #7f8fa6;
 }
 
 .artOpts {
@@ -28,6 +34,7 @@
     margin-top: -1vw;
     font-size: 2vw;
     color: #7f8fa6;
+    padding: 0;
 }
 
 .artOpts:hover {

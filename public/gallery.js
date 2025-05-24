@@ -5,6 +5,9 @@ const newArt = document.getElementById("newArt");
 const gallery = document.getElementById("gallery");
 const artworks = JSON.parse(localStorage.getItem("artworks")) || [];
 const artMenu = document.getElementById("artMenu");
+
+
+const rename = document.getElementById("rename");
 const del = document.getElementById("del");
 const close = document.getElementById("close");
 
@@ -30,6 +33,13 @@ artworks.forEach((art, i) => {
     link.appendChild(img);
     wrapper.appendChild(link);
 
+    const infoRow = document.createElement("div");
+    infoRow.className = "infoRow";
+
+    const artName = document.createElement("span");
+    artName.className = "artName";
+    artName.textContent = art.name;
+
     const artOpts = document.createElement("button");
     artOpts.className = "artOpts";
     artOpts.textContent = "...";
@@ -38,7 +48,17 @@ artworks.forEach((art, i) => {
         const rect = e.target.getBoundingClientRect();
         artMenu.style.left = `${e.target.offsetLeft}px`;
         artMenu.style.top = `${e.target.offsetTop + e.target.offsetHeight}px`;
-        artMenu.classList.toggle("show");
+        artMenu.classList.add("show");
+
+        rename.addEventListener("click", () => {
+            const newName = prompt("Enter new name:");
+            if (newName) {
+                artworks[i].name = newName;
+                localStorage.setItem("artworks", JSON.stringify(artworks));
+                location.reload();
+            }
+        })
+
         del.addEventListener("click", () => {
             artworks.splice(i, 1);
             localStorage.setItem("artworks", JSON.stringify(artworks));
@@ -46,10 +66,21 @@ artworks.forEach((art, i) => {
         });
     });
 
-    wrapper.appendChild(artOpts);
+    infoRow.appendChild(artName);
+    infoRow.appendChild(artOpts);
+
+    wrapper.appendChild(infoRow);
     gallery.appendChild(wrapper);
 });
 
+// CLOSE ART MENU
+
 close.addEventListener("click", () => {
-    artMenu.style.display = "none";
-}); 
+    artMenu.classList.remove("show");
+});
+
+window.addEventListener("click", (e) => {
+    if (!artMenu.contains(e.target) && !Array.from(document.getElementsByClassName("artOpts")).some(btn => btn.contains(e.target))) {
+        artMenu.classList.remove("show");
+    }
+});
