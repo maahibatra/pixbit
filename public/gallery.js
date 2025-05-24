@@ -34,8 +34,11 @@ artworks.forEach((art, i) => {
     artOpts.className = "artOpts";
     artOpts.textContent = "...";
 
-    artOpts.addEventListener("click", () => {
-        artMenu.style.display = "block";
+    artOpts.addEventListener("click", (e) => {
+        const rect = e.target.getBoundingClientRect();
+        artMenu.style.left = `${e.target.offsetLeft}px`;
+        artMenu.style.top = `${e.target.offsetTop + e.target.offsetHeight}px`;
+        artMenu.classList.toggle("show");
         del.addEventListener("click", () => {
             artworks.splice(i, 1);
             localStorage.setItem("artworks", JSON.stringify(artworks));
@@ -49,4 +52,4 @@ artworks.forEach((art, i) => {
 
 close.addEventListener("click", () => {
     artMenu.style.display = "none";
-});
+}); 
