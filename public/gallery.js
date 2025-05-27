@@ -11,12 +11,6 @@ const rename = document.getElementById("rename");
 const del = document.getElementById("del");
 const close = document.getElementById("close");
 
-// NEW ARTWORK
-
-newArt.addEventListener("click", () => {
-    window.location.href = "canvas.html";
-});
-
 // LOAD AND DELETE ARTWORK
 
 artworks.forEach((art, i) => {
