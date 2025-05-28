@@ -163,17 +163,6 @@ galBtn.addEventListener("click", () => {
 
     if (openedI !== null) {
         artworks[openedI].data = data;
-    } else {
-        let untitledC = 1;
-        const baseName = "Untitled";
-        const existingNames = artworks.map(a => a.name);
-
-        while (existingNames.includes(`${baseName} ${untitledC}`)) {
-            untitledC++;
-        }
-
-        const name = `${baseName} ${untitledC}`;
-        artworks.push({ name, data });
     }
 
     localStorage.setItem("artworks", JSON.stringify(artworks));
