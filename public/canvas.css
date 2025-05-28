@@ -21,6 +21,16 @@
     display: flex;
 }
 
+#artNameDiv {
+    font-size: 2vw;
+    color: #f4f4f4;
+    cursor: pointer;
+}
+
+#artName:hover {
+    text-decoration: underline;
+}
+
 #board {
     position: relative;
     width: 800px;

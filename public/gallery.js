@@ -54,9 +54,22 @@ artworks.forEach((art, i) => {
         })
 
         del.addEventListener("click", () => {
+            console.log("delete:" + i);
             artworks.splice(i, 1);
             localStorage.setItem("artworks", JSON.stringify(artworks));
             location.reload();
+        });
+
+        close.addEventListener("click", () => {
+            console.log("close btn:" + i);
+            artMenu.classList.remove("show");
+        });
+        
+        window.addEventListener("click", (e) => {
+            console.log("close:" + i);
+            if (!artMenu.contains(e.target) && !Array.from(document.getElementsByClassName("artOpts")).some(btn => btn.contains(e.target))) {
+                artMenu.classList.remove("show");
+            }
         });
     });
 
@@ -65,16 +78,4 @@ artworks.forEach((art, i) => {
 
     wrapper.appendChild(infoRow);
     gallery.appendChild(wrapper);
-});
-
-// CLOSE ART MENU
-
-close.addEventListener("click", () => {
-    artMenu.classList.remove("show");
-});
-
-window.addEventListener("click", (e) => {
-    if (!artMenu.contains(e.target) && !Array.from(document.getElementsByClassName("artOpts")).some(btn => btn.contains(e.target))) {
-        artMenu.classList.remove("show");
-    }
 });

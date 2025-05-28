@@ -17,6 +17,7 @@ let redoStack = [];
 const save = document.getElementById("save");
 
 const galBtn = document.getElementById("galBtn");
+const artName = document.getElementById("artName");
 let openedI = null;
 
 let lastCol = null;
@@ -189,6 +190,7 @@ function loadArt() {
 
         if (art) {
             openedI = parseInt(i);
+            artName.textContent = art.name;
             const img = new Image();
             img.src = art.data;
             img.onload = () => {
@@ -196,6 +198,15 @@ function loadArt() {
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
             };
         }
+
+        artName.addEventListener("click", () => {
+            const newName = prompt("Enter new name:");
+            if (newName) {
+                artworks[i].name = newName;
+                localStorage.setItem("artworks", JSON.stringify(artworks));
+                location.reload();
+            }
+        });
     }
 }
 
