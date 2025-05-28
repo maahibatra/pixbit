@@ -159,7 +159,13 @@ saveMenu.addEventListener("click", (e) => {
 
 galBtn.addEventListener("click", () => {
     const artworks = JSON.parse(localStorage.getItem("artworks")) || [];
-    const data = canvas.toDataURL();
+
+    const galCanvas = document.createElement("canvas");
+    galCanvas.width = gridSize;
+    galCanvas.height = gridSize;
+    const galCtx = galCanvas.getContext("2d");
+    galCtx.drawImage(canvas, 0, 0, gridSize, gridSize);
+    const data = galCanvas.toDataURL();
 
     if (openedI !== null) {
         artworks[openedI].data = data;

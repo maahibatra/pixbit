@@ -11,6 +11,7 @@
     transition: 0.3s;
     border: 0.3vw solid #7f8fa6;
     border-radius: 0.2vw;
+    image-rendering: pixelated;
 }
 
 #gallery img:hover {
