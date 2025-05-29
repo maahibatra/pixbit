@@ -163,23 +163,23 @@ saveMenu.addEventListener("click", (e) => {
 
 // SAVE TO AND LOAD FROM GALLERY
 
-galBtn.addEventListener("click", () => {
+function saveArt() {
     const artworks = JSON.parse(localStorage.getItem("artworks")) || [];
 
-    const galCanvas = document.createElement("canvas");
-    galCanvas.width = gridSize;
-    galCanvas.height = gridSize;
-    const galCtx = galCanvas.getContext("2d");
-    galCtx.drawImage(canvas, 0, 0, gridSize, gridSize);
-    const data = galCanvas.toDataURL();
+    const saveCanvas = document.createElement("canvas");
+    saveCanvas.width = gridSize;
+    saveCanvas.height = gridSize;
+    const saveCtx = saveCanvas.getContext("2d");
+    saveCtx.drawImage(canvas, 0, 0, gridSize, gridSize);
+    const data = saveCanvas.toDataURL();
 
     if (openedI !== null) {
         artworks[openedI].data = data;
     }
 
     localStorage.setItem("artworks", JSON.stringify(artworks));
-    window.location.href = "index.html";
-});
+    console.log(artworks);
+}
 
 function loadArt() {
     const params = new URLSearchParams(window.location.search);
@@ -265,6 +265,10 @@ canvas.addEventListener("mousemove", (e) => {
 });
 
 window.addEventListener("mouseup", () => {
+    if (tool === "b" || tool === "e") {
+        saveArt();
+    }
+
     isDrawing = false;
     lastCol = null;
     lastRow = null;
@@ -307,7 +311,6 @@ function draw(e) {
 }
 
 function path(x0, y0, x1, y1) {
-    console.log("test");
     const dx = Math.abs(x1 - x0);
     const dy = Math.abs(y1 - y0);
     const sx = x0 < x1 ? 1 : -1;
@@ -359,3 +362,9 @@ function rgbaToHex(r, g, b, a) {
 
 setActiveTool(tool);
 loadArt();
+
+// BEFORE PAGE RELOAD
+
+window.addEventListener("beforeunload", (e) => {
+    saveArt();
+});
