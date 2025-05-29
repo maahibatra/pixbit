@@ -9,6 +9,9 @@ let color = localStorage.getItem("color") || "#ff69b4";
 
 const toolbar = document.getElementById("toolbar");
 let tool = localStorage.getItem("tool") || "b";
+
+let eyedropperActive = false;
+
 const undo = document.getElementById("undo");
 const redo = document.getElementById("redo");
 let undoStack = [];
@@ -49,8 +52,10 @@ pickr.on("save", (newColor) => {
     color = newColor.toHEXA().toString();
     localStorage.setItem("color", color);
 
-    tool = "b";
-    setActiveTool();
+    if (tool === "e") {
+        tool = "b";
+        setActiveTool();
+    }
     
     pickr.hide();
 })
@@ -261,6 +266,12 @@ window.addEventListener("mouseup", () => {
     isDrawing = false;
     lastCol = null;
     lastRow = null;
+
+    if (eyedropperActive) {
+        tool = "b";
+        setActiveTool();
+        eyedropperActive = false;
+    }
 });
 
 canvas.addEventListener("mouseleave", (e) => {
@@ -322,20 +333,14 @@ function drawPixel(col, row) {
     } else if (tool === "e") {
         ctx.clearRect(col * cellSize, row * cellSize, cellSize, cellSize);
     } else if (tool === "i") {
-        function eyedropperFunction() {
-            imageData = ctx.getImageData(col * cellSize, row * cellSize, cellSize, cellSize);
-            const [r, g, b, a] = imageData.data;
-            color = rgbaToHex(r, g, b, a);
-            pickr.setColor(color);
-            localStorage.setItem("color", color);
-            tool = "b";
-            setActiveTool();
-        }
-
-        canvas.addEventListener("mouseup", eyedropperFunction);
-        setTimeout(() => {
-            canvas.removeEventListener("mouseup", eyedropperFunction);
-        }, 100);
+        imageData = ctx.getImageData(col * cellSize, row * cellSize, cellSize, cellSize);
+        const [r, g, b, a] = imageData.data;
+        color = rgbaToHex(r, g, b, a);
+        pickr.setColor(color);
+        localStorage.setItem("color", color);
+        eyedropperActive = true;
+    } else if (tool === "f") {
+        // later
     }
 }
 
