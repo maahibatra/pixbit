@@ -26,6 +26,7 @@ let openedI = null;
 let lastCol = null;
 let lastRow = null;
 let isDrawing = false;
+let mouseClick = false;
 let skip = false;
 
 // PICKR/COLOR
@@ -254,6 +255,7 @@ canvas.addEventListener("mousedown", (e) => {
         saveState();
     }
     isDrawing = true;
+    mouseClick = true;
     draw(e);
 });
 
@@ -295,12 +297,17 @@ function draw(e) {
         skip = false;
     } else if (lastCol !== null && lastRow !== null)
         path(lastCol, lastRow, col, row);
-
+    else if (mouseClick = true) {
+        drawPixel(col, row);
+        mouseClick = false;
+    }
+    
     lastCol = col;
     lastRow = row;
 }
 
 function path(x0, y0, x1, y1) {
+    console.log("test");
     const dx = Math.abs(x1 - x0);
     const dy = Math.abs(y1 - y0);
     const sx = x0 < x1 ? 1 : -1;
