@@ -189,6 +189,7 @@ function loadArt() {
             const img = new Image();
             img.src = art.data;
             img.onload = () => {
+                ctx.imageSmoothingEnabled = false;
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
             };
