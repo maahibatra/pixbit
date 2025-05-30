@@ -9,6 +9,22 @@ let color = localStorage.getItem("color") || "#ff69b4";
 
 const toolbar = document.getElementById("toolbar");
 let tool = localStorage.getItem("tool") || "b";
+let toolSwitch = document.getElementById("toolSwitch");
+let toolSwitchMsg = {
+    z: "NOTHING TO UNDO",
+    y: "NOTHING TO REDO"
+};
+let toolNames = {
+    b: "BRUSH",
+    e: "ERASER",
+    i: "EYEDROPPER",
+    f: "FILL",
+    z: "UNDO",
+    y: "REDO",
+    s: "SAVE",
+    g: "GALLERY"
+};
+const realTools = ["b", "e", "i", "f"];
 
 let eyedropperActive = false;
 
@@ -72,19 +88,36 @@ toolbar.onclick = (e) => {
 }
 
 function setActiveTool() {
+    let currentTool = localStorage.getItem("tool") || "b";
+
     const btn = toolbar.querySelector(`button[data-tool="${tool}"]`);
     if (btn) {
         [...toolbar.children].forEach(child => {
-            child.classList.toggle("active", child === btn);
+            if (realTools.includes(tool))
+                child.classList.toggle("active", child === btn);
         });
     }
-    localStorage.setItem("tool", tool);
+
+    toolSwitch.textContent = toolSwitchMsg[tool] || toolNames[tool];
+    toolSwitch.classList.add("slideUp");
+    setTimeout(() => {
+        toolSwitch.classList.remove("slideUp");
+    }, 1000);
+
+    if (realTools.includes(tool)) {
+        let currentTool = tool;
+        localStorage.setItem("tool", tool);
+    } else
+        tool = currentTool;
 }
 
 // UNDO AND REDO
 
 undo.addEventListener("click", () => {
-    if (undoStack.length > 0) {
+    if (undoStack.length === 0)
+        toolSwitchMsg.z = "NOTHING TO UNDO";
+    else if (undoStack.length > 0) {
+        toolSwitchMsg.z = null;
         const state = undoStack.pop();
         redoStack.push(canvas.toDataURL());
         loadState(state, undo);
@@ -92,7 +125,10 @@ undo.addEventListener("click", () => {
 });
 
 redo.addEventListener("click", () => {
-    if (redoStack.length > 0) {
+    if (redoStack.length === 0)
+        toolSwitchMsg.y = "NOTHING TO REDO";
+    else if (redoStack.length > 0) {
+        toolSwitchMsg.y = null;
         const state = redoStack.pop();
         undoStack.push(canvas.toDataURL());
         loadState(state, redo);
@@ -110,7 +146,7 @@ function loadState(state, button) {
     button.classList.add("active");
     setTimeout(() => {
         button.classList.remove("active");
-    }, 300);
+    }, 600);
     const img = new Image();
     img.src = state;
     img.onload = () => {
@@ -178,7 +214,6 @@ function saveArt() {
     }
 
     localStorage.setItem("artworks", JSON.stringify(artworks));
-    console.log(artworks);
 }
 
 function loadArt() {
@@ -232,6 +267,11 @@ window.addEventListener("keydown", (e) => {
                 tool = "i";
                 setActiveTool();
                 break;
+            case "f":
+                e.preventDefault();
+                tool = "f";
+                setActiveTool();
+                break;
             case "z":
                 e.preventDefault();
                 undo.click();
@@ -243,6 +283,10 @@ window.addEventListener("keydown", (e) => {
             case "s":
                 e.preventDefault();
                 save.click();
+                break;
+            case "g":
+                e.preventDefault();
+                window.location = "index.html";
                 break;
         }
     }

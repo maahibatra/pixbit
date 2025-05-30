@@ -24,8 +24,8 @@
             <button data-tool="e">ERASER</button>
             <button data-tool="i">EYEDROPPER</button>
             <button data-tool="f">FILL</button>
-            <button id="undo">UNDO</button>
-            <button id="redo">REDO</button>
+            <button data-tool="z" id="undo">UNDO</button>
+            <button data-tool="y" id="redo">REDO</button>
             <div id="save">
                 <button id="saveBtn">SAVE</button>
                 <div id="saveMenu">
@@ -42,6 +42,8 @@
             <canvas id="canvas" width="800" height="800"></canvas>
             <div id="grid"></div>
         </div>
+
+        <div id="toolSwitch">meow</div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr"></script>
