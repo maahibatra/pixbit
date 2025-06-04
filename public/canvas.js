@@ -28,6 +28,8 @@ const realTools = ["b", "e", "i", "f"];
 
 let eyedropperActive = false;
 
+let queue, visited, targetColor;
+
 const undo = document.getElementById("undo");
 const redo = document.getElementById("redo");
 let undoStack = [];
@@ -394,13 +396,15 @@ function drawPixel(col, row) {
         imageData = ctx.getImageData(x, y, 1, 1);
         const [r, g, b, a] = imageData.data;
         color = rgbaToHex(r, g, b, a);
+
         pickr.setColor(color);
         localStorage.setItem("color", color);
+
         eyedropperActive = true;
     } else if (tool === "f") {
         imageData = ctx.getImageData(x, y, 1, 1);
         const [r, g, b, a] = imageData.data;
-        const targetColor = rgbaToHex(r, g, b, a);
+        targetColor = rgbaToHex(r, g, b, a);
 
         let fillColor = color;
         if (fillColor.length === 7)
@@ -411,8 +415,8 @@ function drawPixel(col, row) {
             return;
         }
 
-        const queue = [[col, row]];
-        const visited = new Set();
+        queue = [[col, row]];
+        visited = new Set();
         visited.add(`${col},${row}`);
 
         while (queue.length > 0) {
@@ -421,67 +425,28 @@ function drawPixel(col, row) {
             ctx.fillStyle = color;
             ctx.fillRect(curCol * cellSize, curRow * cellSize, cellSize, cellSize);
 
-            const rightCol = curCol + 1;
-            const downRow = curRow + 1;
-            const leftCol = curCol - 1;
-            const upRow = curRow - 1;
-
-            if (rightCol < canvas.width / cellSize) {
-                const rightX = rightCol * cellSize;
-                const rightY = curRow * cellSize;
-
-                rightData = ctx.getImageData(rightX, rightY, 1, 1)
-                const [rr, rg, rb, ra] = rightData.data;
-                const rightColor = rgbaToHex(rr, rg, rb, ra);
-
-                if (rightColor.toLowerCase() === targetColor.toLowerCase() && !visited.has(`${rightCol},${curRow}`)) {
-                    queue.push([rightCol, curRow]);
-                    visited.add(`${rightCol},${curRow}`);
-                }
-            }
-
-            if (downRow < canvas.height / cellSize) {
-                const downX = curCol * cellSize;
-                const rightY = downRow * cellSize;
-
-                downData = ctx.getImageData(downX, rightY, 1, 1)
-                const [dr, dg, db, da] = downData.data;
-                const downColor = rgbaToHex(dr, dg, db, da);
-
-                if (downColor.toLowerCase() === targetColor.toLowerCase() && !visited.has(`${curCol},${downRow}`)) {
-                    queue.push([curCol, downRow]);
-                    visited.add(`${curCol},${downRow}`);
-                }
-            }
-
-            if (leftCol >= 0) {
-                const leftX = leftCol * cellSize;
-                const leftY = curRow * cellSize;
-
-                leftData = ctx.getImageData(leftX, leftY, 1, 1)
-                const [rr, rg, rb, ra] = leftData.data;
-                const leftColor = rgbaToHex(rr, rg, rb, ra);
-
-                if (leftColor.toLowerCase() === targetColor.toLowerCase() && !visited.has(`${leftCol},${curRow}`)) {
-                    queue.push([leftCol, curRow]);
-                    visited.add(`${leftCol},${curRow}`);
-                }
-            }
-
-            if (upRow >= 0) {
-                const upX = curCol * cellSize;
-                const rightY = upRow * cellSize;
-
-                upData = ctx.getImageData(upX, rightY, 1, 1)
-                const [dr, dg, db, da] = upData.data;
-                const upColor = rgbaToHex(dr, dg, db, da);
-
-                if (upColor.toLowerCase() === targetColor.toLowerCase() && !visited.has(`${curCol},${upRow}`)) {
-                    queue.push([curCol, upRow]);
-                    visited.add(`${curCol},${upRow}`);
-                }
-            }
+            checkNeighbor(curCol + 1, curRow);
+            checkNeighbor(curCol, curRow + 1);
+            checkNeighbor(curCol - 1, curRow);
+            checkNeighbor(curCol, curRow - 1);
         }
+    }
+}
+
+function checkNeighbor(neighborCol, neighborRow) {
+    if (neighborCol < 0 || neighborRow < 0 || neighborCol >= canvas.width / cellSize || neighborRow >= canvas.height / cellSize)
+        return;
+
+    const neighborX = neighborCol * cellSize;
+    const neighborY = neighborRow * cellSize;
+
+    neighborData = ctx.getImageData(neighborX, neighborY, 1, 1)
+    const [nr, ng, nb, na] = neighborData.data;
+    const neighborColor = rgbaToHex(nr, ng, nb, na);
+
+    if (neighborColor.toLowerCase() === targetColor.toLowerCase() && !visited.has(`${neighborCol},${neighborRow}`)) {
+        queue.push([neighborCol, neighborRow]);
+        visited.add(`${neighborCol},${neighborRow}`);
     }
 }
 
