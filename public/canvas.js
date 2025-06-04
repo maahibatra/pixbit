@@ -295,7 +295,7 @@ window.addEventListener("keydown", (e) => {
 // DRAWING EVENT LISTENERS
 
 canvas.addEventListener("mousedown", (e) => {
-    if (tool === "b" || tool === "e") {
+    if (tool === "b" || tool === "e" || tool === "f") {
         saveState();
     }
     isDrawing = true;
@@ -309,7 +309,7 @@ canvas.addEventListener("mousemove", (e) => {
 });
 
 window.addEventListener("mouseup", () => {
-    if (tool === "b" || tool === "e") {
+    if (tool === "b" || tool === "e" || tool === "f") {
         saveArt();
     }
 
@@ -355,6 +355,8 @@ function draw(e) {
 }
 
 function path(x0, y0, x1, y1) {
+    if (tool === "f") return;
+
     const dx = Math.abs(x1 - x0);
     const dy = Math.abs(y1 - y0);
     const sx = x0 < x1 ? 1 : -1;
@@ -377,24 +379,109 @@ function path(x0, y0, x1, y1) {
 }
 
 function drawPixel(col, row) {
+    x = col * cellSize;
+    y = row * cellSize;
     if (tool === "b") {
         if (color === "#00000000")
-            ctx.clearRect(col * cellSize, row * cellSize, cellSize, cellSize);
+            ctx.clearRect(x, y, cellSize, cellSize);
         else {
             ctx.fillStyle = color;
-            ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+            ctx.fillRect(x, y, cellSize, cellSize);
         }
     } else if (tool === "e") {
-        ctx.clearRect(col * cellSize, row * cellSize, cellSize, cellSize);
+        ctx.clearRect(x, y, cellSize, cellSize);
     } else if (tool === "i") {
-        imageData = ctx.getImageData(col * cellSize, row * cellSize, cellSize, cellSize);
+        imageData = ctx.getImageData(x, y, 1, 1);
         const [r, g, b, a] = imageData.data;
         color = rgbaToHex(r, g, b, a);
         pickr.setColor(color);
         localStorage.setItem("color", color);
         eyedropperActive = true;
     } else if (tool === "f") {
-        // later
+        imageData = ctx.getImageData(x, y, 1, 1);
+        const [r, g, b, a] = imageData.data;
+        const targetColor = rgbaToHex(r, g, b, a);
+
+        let fillColor = color;
+        if (fillColor.length === 7)
+            fillColor += "FF";
+
+        if (targetColor.toLowerCase() === fillColor.toLowerCase()) {
+            console.log("fill color matches target");
+            return;
+        }
+
+        const queue = [[col, row]];
+        const visited = new Set();
+        visited.add(`${col},${row}`);
+
+        while (queue.length > 0) {
+            const [curCol, curRow] = queue.shift();
+
+            ctx.fillStyle = color;
+            ctx.fillRect(curCol * cellSize, curRow * cellSize, cellSize, cellSize);
+
+            const rightCol = curCol + 1;
+            const downRow = curRow + 1;
+            const leftCol = curCol - 1;
+            const upRow = curRow - 1;
+
+            if (rightCol < canvas.width / cellSize) {
+                const rightX = rightCol * cellSize;
+                const rightY = curRow * cellSize;
+
+                rightData = ctx.getImageData(rightX, rightY, 1, 1)
+                const [rr, rg, rb, ra] = rightData.data;
+                const rightColor = rgbaToHex(rr, rg, rb, ra);
+
+                if (rightColor.toLowerCase() === targetColor.toLowerCase() && !visited.has(`${rightCol},${curRow}`)) {
+                    queue.push([rightCol, curRow]);
+                    visited.add(`${rightCol},${curRow}`);
+                }
+            }
+
+            if (downRow < canvas.height / cellSize) {
+                const downX = curCol * cellSize;
+                const rightY = downRow * cellSize;
+
+                downData = ctx.getImageData(downX, rightY, 1, 1)
+                const [dr, dg, db, da] = downData.data;
+                const downColor = rgbaToHex(dr, dg, db, da);
+
+                if (downColor.toLowerCase() === targetColor.toLowerCase() && !visited.has(`${curCol},${downRow}`)) {
+                    queue.push([curCol, downRow]);
+                    visited.add(`${curCol},${downRow}`);
+                }
+            }
+
+            if (leftCol >= 0) {
+                const leftX = leftCol * cellSize;
+                const leftY = curRow * cellSize;
+
+                leftData = ctx.getImageData(leftX, leftY, 1, 1)
+                const [rr, rg, rb, ra] = leftData.data;
+                const leftColor = rgbaToHex(rr, rg, rb, ra);
+
+                if (leftColor.toLowerCase() === targetColor.toLowerCase() && !visited.has(`${leftCol},${curRow}`)) {
+                    queue.push([leftCol, curRow]);
+                    visited.add(`${leftCol},${curRow}`);
+                }
+            }
+
+            if (upRow >= 0) {
+                const upX = curCol * cellSize;
+                const rightY = upRow * cellSize;
+
+                upData = ctx.getImageData(upX, rightY, 1, 1)
+                const [dr, dg, db, da] = upData.data;
+                const upColor = rgbaToHex(dr, dg, db, da);
+
+                if (upColor.toLowerCase() === targetColor.toLowerCase() && !visited.has(`${curCol},${upRow}`)) {
+                    queue.push([curCol, upRow]);
+                    visited.add(`${curCol},${upRow}`);
+                }
+            }
+        }
     }
 }
 
