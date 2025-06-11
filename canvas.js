@@ -166,12 +166,25 @@ function loadState(state, button) {
 // RESIZE CANVAS
 
 resize.addEventListener("click", () => {
-    const newSize = prompt("Enter new canvas size:");
+    const newSize = parseInt(prompt("Enter new canvas size:"), 10);
+    if (isNaN(newSize) || newSize <= 0) {
+        alert("Please enter a valid size.");
+        return;
+    }
+
+    const tempCanvas = document.createElement("canvas");
+    tempCanvas.width = canvas.width;
+    tempCanvas.height = canvas.height;
+    const tempCtx = tempCanvas.getContext("2d");
+    tempCtx.drawImage(canvas, 0, 0, gridSize, gridSize);
+
     gridSize = newSize;
     cellSize = canvas.width / gridSize;
-
     if (grid)
         grid.style.setProperty("--grid-division", gridSize);
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height);
 });
 
 // SAVING ARTWORK

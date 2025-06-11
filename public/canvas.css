@@ -60,6 +60,7 @@
     z-index: 1;
     border-right: 2px solid #2c3e50;
     border-bottom: 2px solid #2c3e50;
+    --grid-division: 16;
 }
 
 #grid:before {
@@ -70,7 +71,7 @@
     background-image:
         linear-gradient(to right, #2c3e50 2px, transparent 2px),
         linear-gradient(to bottom, #2c3e50 2px, transparent 2px);
-    background-size: calc(800px / 16) calc(800px / 16);
+    background-size: calc(800px / var(--grid-division)) calc(800px / var(--grid-division));
 }
 
 #toolSwitch {
