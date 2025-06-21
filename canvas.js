@@ -176,7 +176,7 @@ resize.addEventListener("click", () => {
     tempCanvas.width = canvas.width;
     tempCanvas.height = canvas.height;
     const tempCtx = tempCanvas.getContext("2d");
-    tempCtx.drawImage(canvas, 0, 0, gridSize, gridSize);
+    tempCtx.drawImage(canvas, 0, 0, canvas.width, canvas.height);
 
     gridSize = newSize;
     cellSize = canvas.width / gridSize;

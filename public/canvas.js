@@ -166,10 +166,27 @@ function loadState(state, button) {
 // RESIZE CANVAS
 
 resize.addEventListener("click", () => {
-    const newSize = prompt("Enter new canvas size:");
-    gridSize = newSize;
-    cellSize = canvas.width / gridSize;
+    const newGS = parseInt(prompt("Enter new canvas size:"), 10);
+    if (isNaN(newGS) || newGS <= 0) {
+        alert("Please enter a valid size.");
+        return;
+    }
 
+    const oldGS = gridSize;
+    const oldCS = canvas.width / oldGS;
+    const newCS = canvas.width / newGS;
+
+    const tempCanvas = document.createElement("canvas");
+    tempCanvas.width = oldGS;
+    tempCanvas.height = oldGS;
+    const tempCtx = tempCanvas.getContext("2d");
+    tempCtx.drawImage(canvas, 0, 0, oldGS, oldGS);
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(tempCanvas, 0, 0, newCS * oldGS, newCS * oldGS);
+
+    gridSize = newGS;
+    cellSize = newCS;
     if (grid)
         grid.style.setProperty("--grid-division", gridSize);
 });
